@@ -1,39 +1,70 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
+import { useState, useEffect } from 'react';
 import './App.css';
+import FileExplorer from './components/FileExplorer';
+import CodeEditor from './components/CodeEditor';
 
-function Hello() {
+function EditorLayout() {
+  const [currentFile, setCurrentFile] = useState<string | null>(null);
+  const [content, setContent] = useState<string>('');
+  const [isDirty, setIsDirty] = useState(false);
+
+  const handleSelectFile = async (path: string) => {
+    if (isDirty) {
+      if (!window.confirm('You have unsaved changes. Discard them?')) {
+        return;
+      }
+    }
+    try {
+        const text = await window.electron.files.readFile(path);
+        setCurrentFile(path);
+        setContent(text);
+        setIsDirty(false);
+    } catch (err) {
+        console.error(err);
+    }
+  };
+
+  const handleContentChange = (val: string) => {
+    setContent(val);
+    setIsDirty(true);
+  };
+
+  const handleSave = async () => {
+    if (currentFile) {
+        const success = await window.electron.files.saveFile(currentFile, content);
+        if (success) setIsDirty(false);
+    }
+  };
+
+  useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+              e.preventDefault();
+              handleSave();
+          }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentFile, content]);
+
   return (
-    <div>
-      <div className="Hello">
-        <img width="200" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className="Hello">
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <button type="button">
-            <span role="img" aria-label="folded hands">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
+    <div className="app-container">
+      <FileExplorer onSelectFile={handleSelectFile} />
+      <div className="editor-container">
+        {currentFile ? (
+            <>
+                <div className="editor-header">
+                    <span>{currentFile} {isDirty ? '●' : ''}</span>
+                    <button className="save-btn" onClick={handleSave}>Save</button>
+                </div>
+                <CodeEditor value={content} onChange={handleContentChange} />
+            </>
+        ) : (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#5c6370' }}>
+                Select a file to edit
+            </div>
+        )}
       </div>
     </div>
   );
@@ -43,7 +74,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route path="/" element={<EditorLayout />} />
       </Routes>
     </Router>
   );

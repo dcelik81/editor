@@ -22,6 +22,13 @@ const electronHandler = {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
     },
   },
+  files: {
+    selectDirectory: () => ipcRenderer.invoke('files:select-directory'),
+    readDir: (path: string) => ipcRenderer.invoke('files:read-dir', path),
+    readFile: (path: string) => ipcRenderer.invoke('files:read-file', path),
+    saveFile: (filePath: string, content: string) =>
+      ipcRenderer.invoke('files:save-file', { filePath, content }),
+  },
 };
 
 contextBridge.exposeInMainWorld('electron', electronHandler);

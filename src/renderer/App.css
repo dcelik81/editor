@@ -1,62 +1,119 @@
-/*
- * @NOTE: Prepend a `~` to css file paths that are in your node_modules
- *        See https://github.com/webpack-contrib/sass-loader#imports
- */
 body {
-  position: relative;
-  color: white;
+  margin: 0;
+  padding: 0;
   height: 100vh;
-  background: linear-gradient(
-    200.96deg,
-    #fedc2a -29.09%,
-    #dd5789 51.77%,
-    #7a2c9e 129.35%
-  );
-  font-family: sans-serif;
-  overflow-y: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #282c34;
+  color: #abb2bf;
+  overflow: hidden;
 }
 
-button {
-  background-color: white;
-  padding: 10px 20px;
-  border-radius: 10px;
+#root {
+  height: 100%;
+}
+
+.app-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.file-explorer {
+  width: 250px;
+  background-color: #21252b;
+  border-right: 1px solid #181a1f;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.explorer-header {
+  padding: 10px;
+  border-bottom: 1px solid #181a1f;
+}
+
+.explorer-header button {
+  width: 100%;
+  padding: 5px;
+  background: #3d424d;
+  color: white;
   border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-bottom: 5px;
+  box-shadow: none;
   appearance: none;
-  font-size: 1.3rem;
-  box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
-    0px 18px 88px -4px rgba(24, 39, 75, 0.14);
-  transition: all ease-in 0.1s;
+}
+
+.explorer-header button:hover {
+  transform: none;
+  background: #4b515e;
+}
+
+.current-path {
+  font-size: 11px;
+  color: #6b717d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 5px;
+}
+
+.file-item {
+  padding: 4px 10px;
   cursor: pointer;
-  opacity: 0.9;
-}
-
-button:hover {
-  transform: scale(1.05);
-  opacity: 1;
-}
-
-li {
-  list-style: none;
-}
-
-a {
-  text-decoration: none;
-  height: fit-content;
-  width: fit-content;
-  margin: 10px;
-}
-
-a:hover {
-  opacity: 1;
-  text-decoration: none;
-}
-
-.Hello {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  font-size: 13px;
+  user-select: none;
+}
+
+.file-item:hover {
+  background-color: #2c313a;
+}
+
+.file-item .icon {
+  margin-right: 8px;
+  width: 16px;
+  text-align: center;
+}
+
+.editor-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor-header {
+  padding: 8px 15px;
+  background-color: #21252b;
+  border-bottom: 1px solid #181a1f;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.save-btn {
+  background: #98c379;
+  color: #282c34;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  box-shadow: none;
+}
+
+.save-btn:hover {
+  opacity: 0.9;
+  transform: none;
 }
