@@ -16,12 +16,12 @@ function EditorLayout() {
       }
     }
     try {
-        const text = await window.electron.files.readFile(path);
-        setCurrentFile(path);
-        setContent(text);
-        setIsDirty(false);
+      const text = await window.electron.files.readFile(path);
+      setCurrentFile(path);
+      setContent(text);
+      setIsDirty(false);
     } catch (err) {
-        console.error(err);
+      console.error(err);
     }
   };
 
@@ -32,20 +32,20 @@ function EditorLayout() {
 
   const handleSave = async () => {
     if (currentFile) {
-        const success = await window.electron.files.saveFile(currentFile, content);
-        if (success) setIsDirty(false);
+      const success = await window.electron.files.saveFile(currentFile, content);
+      if (success) setIsDirty(false);
     }
   };
 
   useEffect(() => {
-      const handleKeyDown = (e: KeyboardEvent) => {
-          if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-              e.preventDefault();
-              handleSave();
-          }
-      };
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentFile, content]);
 
   return (
@@ -53,17 +53,17 @@ function EditorLayout() {
       <FileExplorer onSelectFile={handleSelectFile} />
       <div className="editor-container">
         {currentFile ? (
-            <>
-                <div className="editor-header">
-                    <span>{currentFile} {isDirty ? '●' : ''}</span>
-                    <button className="save-btn" onClick={handleSave}>Save</button>
-                </div>
-                <CodeEditor value={content} onChange={handleContentChange} />
-            </>
-        ) : (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#5c6370' }}>
-                Select a file to edit
+          <>
+            <div className="editor-header">
+              <span>{currentFile} {isDirty ? '●' : ''}</span>
+              <button className="save-btn" onClick={handleSave}>Save</button>
             </div>
+            <CodeEditor value={content} onChange={handleContentChange} />
+          </>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#5c6370' }}>
+            Select a file to edit
+          </div>
         )}
       </div>
     </div>

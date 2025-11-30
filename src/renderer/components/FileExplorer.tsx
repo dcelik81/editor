@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 
 interface FileNode {
   name: string;
@@ -10,19 +10,29 @@ interface FileExplorerProps {
   onSelectFile: (path: string) => void;
 }
 
-export default function FileExplorer({ onSelectFile }: FileExplorerProps) {
-  const [currentPath, setCurrentPath] = useState<string>('');
-  const [files, setFiles] = useState<FileNode[]>([]);
+interface FileExplorerState {
+  currentPath: string;
+  files: FileNode[];
+}
 
-  const handleOpenFolder = async () => {
+export default class FileExplorer extends Component<FileExplorerProps, FileExplorerState> {
+  constructor(props: FileExplorerProps) {
+    super(props);
+    this.state = {
+      currentPath: '',
+      files: [],
+    };
+  }
+
+  handleOpenFolder = async () => {
     const path = await window.electron.files.selectDirectory();
     if (path) {
-      setCurrentPath(path);
-      loadFiles(path);
+      this.setState({ currentPath: path });
+      this.loadFiles(path);
     }
   };
 
-  const loadFiles = async (path: string) => {
+  loadFiles = async (path: string) => {
     try {
       const result = await window.electron.files.readDir(path);
       // Sort directories first
@@ -32,55 +42,63 @@ export default function FileExplorer({ onSelectFile }: FileExplorerProps) {
         }
         return a.isDirectory ? -1 : 1;
       });
-      setFiles(sorted);
+      this.setState({ files: sorted });
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleNodeClick = (file: FileNode) => {
+  handleNodeClick = (file: FileNode) => {
     if (file.isDirectory) {
-      setCurrentPath(file.path);
-      loadFiles(file.path);
+      this.setState({ currentPath: file.path });
+      this.loadFiles(file.path);
     } else {
-      onSelectFile(file.path);
+      this.props.onSelectFile(file.path);
     }
   };
 
-  const handleGoUp = () => {
+  handleGoUp = () => {
+    const { currentPath } = this.state;
     if (!currentPath) return;
     // simplistic parent resolution
     const separator = currentPath.includes('/') ? '/' : '\\';
     const lastIndex = currentPath.lastIndexOf(separator);
     if (lastIndex > 0) {
       const parent = currentPath.substring(0, lastIndex);
-      setCurrentPath(parent);
-      loadFiles(parent);
+      this.setState({ currentPath: parent });
+      this.loadFiles(parent);
     }
   };
 
-  return (
-    <div className="file-explorer">
-      <div className="explorer-header">
-        <button onClick={handleOpenFolder}>Open Folder</button>
-        {currentPath && <button onClick={handleGoUp} style={{marginTop: '5px'}}>⬆ Up</button>}
-        <div className="current-path" title={currentPath}>
-          {currentPath ? currentPath.split(/[/\\]/).pop() : 'No Folder'}
+  render() {
+    const { currentPath, files } = this.state;
+
+    return (
+      <div className="file-explorer">
+        <div className="explorer-header">
+          <button onClick={this.handleOpenFolder}>Open Folder</button>
+          {currentPath && (
+            <button onClick={this.handleGoUp} style={{ marginTop: '5px' }}>
+              ⬆ Up
+            </button>
+          )}
+          <div className="current-path" title={currentPath}>
+            {currentPath ? currentPath.split(/[/\\]/).pop() : 'No Folder'}
+          </div>
+        </div>
+        <div className="file-list">
+          {files.map((file) => (
+            <div
+              key={file.path}
+              className={`file-item ${file.isDirectory ? 'directory' : 'file'}`}
+              onClick={() => this.handleNodeClick(file)}
+            >
+              <span className="icon">{file.isDirectory ? '📁' : '📄'}</span>
+              <span className="name">{file.name}</span>
+            </div>
+          ))}
         </div>
       </div>
-      <div className="file-list">
-        {files.map((file) => (
-          <div
-            key={file.path}
-            className={`file-item ${file.isDirectory ? 'directory' : 'file'}`}
-            onClick={() => handleNodeClick(file)}
-          >
-            <span className="icon">{file.isDirectory ? '📁' : '📄'}</span>
-            <span className="name">{file.name}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+    );
+  }
 }
-
