@@ -63,5 +63,17 @@ export default class IpcService {
                 }
             },
         );
+        ipcMain.handle('files:create-dir', async (event, dirPath) => {
+            try {
+                if (!fs.existsSync(dirPath)) {
+                    await fs.promises.mkdir(dirPath);
+                    return true;
+                }
+                return false; // Klasör zaten varsa
+            } catch (err) {
+                console.error('Error creating directory:', err);
+                return false;
+            }
+        });
     }
 }
