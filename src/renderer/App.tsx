@@ -1,13 +1,18 @@
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 import FileExplorer from './components/FileExplorer';
 import CodeEditor from './components/CodeEditor';
+import { SyntaxFactory } from './strategy/syntax-highlighting/SyntaxFactory';
 
 function EditorLayout() {
-    const [currentFile, setCurrentFile] = useState<string | null>(null);
+    const [currentFile, setCurrentFile] = useState<string>('');
     const [content, setContent] = useState<string>('');
     const [isDirty, setIsDirty] = useState(false);
+
+    const strategy = useMemo(() => {
+        return SyntaxFactory.createSyntaxStrategy(currentFile);
+    }, [currentFile]);
 
     const handleSelectFile = async (path: string) => {
         if (isDirty) {
@@ -68,6 +73,7 @@ function EditorLayout() {
                         <CodeEditor
                             value={content}
                             onChange={handleContentChange}
+                            syntaxStrategy={strategy}
                         />
                     </>
                 ) : (

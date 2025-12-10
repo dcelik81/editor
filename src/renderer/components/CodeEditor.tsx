@@ -1,23 +1,23 @@
-import React from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-import { oneDark } from '@codemirror/theme-one-dark';
+import { SyntaxStrategy } from '../strategy/syntax-highlighting/SyntaxStrategy';
 
 interface CodeEditorProps {
     value: string;
     onChange: (val: string) => void;
+    syntaxStrategy: SyntaxStrategy;
 }
 
-export default function CodeEditor({ value, onChange }: CodeEditorProps) {
+export default function CodeEditor({
+    value,
+    onChange,
+    syntaxStrategy,
+}: CodeEditorProps) {
     return (
-        <div style={{ height: '100%', width: '100%', overflow: 'auto' }}>
-            <CodeMirror
-                value={value}
-                height="100%"
-                theme={oneDark}
-                extensions={[javascript({ jsx: true })]}
-                onChange={(val) => onChange(val)}
-            />
-        </div>
+        <CodeMirror
+            value={value}
+            theme={'none'}
+            extensions={syntaxStrategy.getLanguageParser()}
+            onChange={(val) => onChange(val)}
+        />
     );
 }
