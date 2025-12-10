@@ -25,6 +25,7 @@ const electronHandler = {
         },
     },
     files: {
+        createDir: (path: string) => ipcRenderer.invoke('files:create-dir', path),
         selectDirectory: () => ipcRenderer.invoke('files:select-directory'),
         readDir: (path: string) => ipcRenderer.invoke('files:read-dir', path),
         readFile: (path: string) => ipcRenderer.invoke('files:read-file', path),

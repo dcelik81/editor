@@ -3,7 +3,15 @@ import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 import FileExplorer from './components/FileExplorer';
 import CodeEditor from './components/CodeEditor';
+
+// Strategy Import (Görünüm)
 import { SyntaxFactory } from './strategy/syntax-highlighting/SyntaxFactory';
+
+// Command Imports (Sadece Save kaldı)
+import { SaveFileCommand } from './command/SaveFileCommand';
+import { CommandInvoker } from './command/CommandInvoker';
+
+const commandInvoker = new CommandInvoker();
 
 function EditorLayout() {
     const [currentFile, setCurrentFile] = useState<string>('');
@@ -16,7 +24,7 @@ function EditorLayout() {
 
     const handleSelectFile = async (path: string) => {
         if (isDirty) {
-            if (!window.confirm('You have unsaved changes. Discard them?')) {
+            if (!window.confirm('Kaydedilmemiş değişiklikler var. Devam edilsin mi?')) {
                 return;
             }
         }
@@ -35,13 +43,12 @@ function EditorLayout() {
         setIsDirty(true);
     };
 
+    // --- COMMAND FONKSİYONLARI ---
     const handleSave = async () => {
         if (currentFile) {
-            const success = await window.electron.files.saveFile(
-                currentFile,
-                content,
-            );
-            if (success) setIsDirty(false);
+            const saveCmd = new SaveFileCommand(currentFile, content);
+            await commandInvoker.executeCommand(saveCmd);
+            setIsDirty(false);
         }
     };
 
@@ -66,6 +73,7 @@ function EditorLayout() {
                             <span>
                                 {currentFile} {isDirty ? '●' : ''}
                             </span>
+                            {/* Sadece Save Butonu Burada Kaldı */}
                             <button className="save-btn" onClick={handleSave}>
                                 Save
                             </button>
@@ -77,15 +85,7 @@ function EditorLayout() {
                         />
                     </>
                 ) : (
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            height: '100%',
-                            color: '#5c6370',
-                        }}
-                    >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#5c6370' }}>
                         Select a file to edit
                     </div>
                 )}
