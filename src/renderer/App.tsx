@@ -6,10 +6,8 @@ import CodeEditor from './components/CodeEditor';
 import NotificationPanel from './components/NotificationPanel';
 import { notificationCenter } from './observer/NotificationCenter';
 
-// Strategy Import (Görünüm)
 import { SyntaxFactory } from './strategy/syntax-highlighting/SyntaxFactory';
 
-// Command Imports (Sadece Save kaldı)
 import { SaveFileCommand } from './command/SaveFileCommand';
 import { CommandInvoker } from './command/CommandInvoker';
 
