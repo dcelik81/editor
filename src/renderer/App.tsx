@@ -3,11 +3,11 @@ import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 import FileExplorer from './components/FileExplorer';
 import CodeEditor from './components/CodeEditor';
+import NotificationPanel from './components/NotificationPanel';
+import { notificationCenter } from './observer/NotificationCenter';
 
-// Strategy Import (Görünüm)
 import { SyntaxFactory } from './strategy/syntax-highlighting/SyntaxFactory';
 
-// Command Imports (Sadece Save kaldı)
 import { SaveFileCommand } from './command/SaveFileCommand';
 import { CommandInvoker } from './command/CommandInvoker';
 
@@ -33,8 +33,12 @@ function EditorLayout() {
             setCurrentFile(path);
             setContent(text);
             setIsDirty(false);
+            
+            // Observer Pattern: Trigger notification
+            notificationCenter.push(`Opened file: ${path.split('\\').pop()}`, 'info');
         } catch (err) {
             console.error(err);
+            notificationCenter.push(`Failed to open file: ${path}`, 'error');
         }
     };
 
@@ -46,9 +50,18 @@ function EditorLayout() {
     // --- COMMAND FONKSİYONLARI ---
     const handleSave = async () => {
         if (currentFile) {
-            const saveCmd = new SaveFileCommand(currentFile, content);
-            await commandInvoker.executeCommand(saveCmd);
-            setIsDirty(false);
+            try {
+                const saveCmd = new SaveFileCommand(currentFile, content);
+                await commandInvoker.executeCommand(saveCmd);
+                setIsDirty(false);
+                
+                // Observer Pattern: Trigger notification on success
+                notificationCenter.push('File saved successfully!', 'success');
+            } catch (err) {
+                console.error(err);
+                // Observer Pattern: Trigger notification on failure
+                notificationCenter.push('Failed to save file.', 'error');
+            }
         }
     };
 
@@ -65,6 +78,9 @@ function EditorLayout() {
 
     return (
         <div className="app-container">
+            {/* GLOBAL OBSERVER COMPONENT: Notification Panel */}
+            <NotificationPanel />
+            
             <FileExplorer onSelectFile={handleSelectFile} />
             <div className="editor-container">
                 {currentFile ? (

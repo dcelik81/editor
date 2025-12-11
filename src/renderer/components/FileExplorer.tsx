@@ -20,7 +20,6 @@ interface FileExplorerProps {
 interface FileExplorerState {
     currentPath: string;
     files: FileNode[];
-    // Modal (Pencere) için yeni state'ler
     isModalOpen: boolean;
     modalType: 'file' | 'dir' | null;
     modalInputValue: string;
@@ -64,26 +63,21 @@ export default class FileExplorer extends Component<
         }
     };
 
-    // --- YENİ EKLENEN MODAL VE OLUŞTURMA FONKSİYONLARI ---
-
-    // 1. Modalı açan fonksiyon
     openCreationModal = (type: 'file' | 'dir') => {
         const { currentPath } = this.state;
-        if (!currentPath) return; // Klasör seçili değilse açma
+        if (!currentPath) return;
 
         this.setState({
             isModalOpen: true,
             modalType: type,
-            modalInputValue: '' // Inputu temizle
+            modalInputValue: ''
         });
     };
 
-    // 2. Modalı kapatan fonksiyon
     closeModal = () => {
         this.setState({ isModalOpen: false, modalType: null, modalInputValue: '' });
     };
 
-    // 3. "Oluştur" butonuna basınca çalışan asıl fonksiyon
     handleConfirmCreation = async () => {
         const { currentPath, modalType, modalInputValue } = this.state;
 
@@ -98,17 +92,15 @@ export default class FileExplorer extends Component<
         if (modalType === 'file') {
             const cmd = new CreateFileCommand(targetPath);
             await invoker.executeCommand(cmd);
-            this.props.onSelectFile(targetPath); // Dosyayı aç
+            this.props.onSelectFile(targetPath);
         } else {
             const cmd = new CreateDirectoryCommand(targetPath);
             await invoker.executeCommand(cmd);
         }
 
-        this.loadFiles(currentPath); // Listeyi yenile
-        this.closeModal(); // Pencereyi kapat
+        this.loadFiles(currentPath);
+        this.closeModal();
     };
-
-    // -----------------------------------------------------
 
     handleNodeClick = (file: FileNode) => {
         if (file.isDirectory) {
@@ -214,7 +206,6 @@ export default class FileExplorer extends Component<
                         </div>
                     </div>
                 )}
-                {/* ------------------------------------------- */}
 
                 <div className="explorer-header">
                     <button onClick={this.handleOpenFolder} style={{marginBottom: '5px', width: '100%'}}>
@@ -224,7 +215,6 @@ export default class FileExplorer extends Component<
                     {currentPath && (
                         <>
                             <div style={{display: 'flex', gap: '5px', marginBottom: '5px'}}>
-                                {/* Butonlar artık modalı açıyor */}
                                 <button
                                     onClick={() => this.openCreationModal('file')}
                                     style={{flex: 1, backgroundColor: '#61afef', color: '#282c34', border: 'none', cursor: 'pointer'}}
@@ -235,7 +225,7 @@ export default class FileExplorer extends Component<
                                     onClick={() => this.openCreationModal('dir')}
                                     style={{flex: 1, backgroundColor: '#c678dd', color: '#282c34', border: 'none', cursor: 'pointer'}}
                                 >
-                                    + Dir
+                                    + Directory
                                 </button>
                             </div>
                             <button onClick={this.handleGoUp} style={{width: '100%'}}>
