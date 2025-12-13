@@ -12,7 +12,10 @@ export class SaveFileCommand implements Command {
     async execute(): Promise<void> {
         console.log(`💾 Command: Kaydediliyor -> ${this.filePath}`);
         try {
-            const success = await window.electron.files.saveFile(this.filePath, this.content);
+            const success = await window.electron.files.saveFile(
+                this.filePath,
+                this.content,
+            );
             if (success) {
                 console.log('✅ Dosya kaydedildi.');
             } else {

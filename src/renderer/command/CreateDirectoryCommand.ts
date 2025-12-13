@@ -11,9 +11,9 @@ export class CreateDirectoryCommand implements Command {
         console.log(`Command: Klasör oluşturuluyor -> ${this.dirPath}`);
         const success = await window.electron.files.createDir(this.dirPath);
         if (success) {
-            console.log("✅ Klasör oluşturuldu.");
+            console.log('✅ Klasör oluşturuldu.');
         } else {
-            console.error("❌ Klasör oluşturulamadı (veya zaten var).");
+            console.error('❌ Klasör oluşturulamadı (veya zaten var).');
         }
     }
 }

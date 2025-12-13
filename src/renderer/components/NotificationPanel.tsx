@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { notificationCenter, Notification } from '../observer/NotificationCenter';
 import './NotificationPanel.css';
+import React, { useEffect, useState } from 'react';
+import {
+    notificationCenter,
+    Notification,
+} from '../observer/NotificationCenter';
 
 /**
  * Observer Pattern - Observer
- * 
+ *
  * This component acts as an Observer.
  * It strictly subscribes to the shared Subject (NotificationCenter) on mount
  * and updates its local state whenever the Subject notifies of a change.
@@ -21,7 +24,7 @@ const NotificationPanel: React.FC = () => {
 
         // 2. SUBSCRIBE to the Subject
         // The subscribe method returns a cleanup function (unsubscribe)
-        const unsubscribe = notificationCenter.subscribe(updateNotifications);
+        const unsubscribe = notificationCenter.register(updateNotifications);
 
         // 3. UNSUBSCRIBE on cleanup
         return () => {
@@ -37,8 +40,8 @@ const NotificationPanel: React.FC = () => {
     return (
         <div className="notification-container">
             {notifications.map((note) => (
-                <div 
-                    key={note.id} 
+                <div
+                    key={note.id}
                     className={`notification-toast notification-${note.level}`}
                     onClick={() => notificationCenter.remove(note.id)}
                     title="Click to dismiss"
@@ -47,7 +50,11 @@ const NotificationPanel: React.FC = () => {
                         {note.message}
                     </div>
                     <div className="notification-toast-time">
-                        {note.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                        {note.timestamp.toLocaleTimeString('en-UK', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                        })}
                     </div>
                 </div>
             ))}

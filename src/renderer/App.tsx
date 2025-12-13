@@ -24,7 +24,11 @@ function EditorLayout() {
 
     const handleSelectFile = async (path: string) => {
         if (isDirty) {
-            if (!window.confirm('Kaydedilmemiş değişiklikler var. Devam edilsin mi?')) {
+            if (
+                !window.confirm(
+                    'Kaydedilmemiş değişiklikler var. Devam edilsin mi?',
+                )
+            ) {
                 return;
             }
         }
@@ -33,9 +37,12 @@ function EditorLayout() {
             setCurrentFile(path);
             setContent(text);
             setIsDirty(false);
-            
+
             // Observer Pattern: Trigger notification
-            notificationCenter.push(`Opened file: ${path.split('\\').pop()}`, 'info');
+            notificationCenter.push(
+                `Opened file: ${path.split('\\').pop()}`,
+                'info',
+            );
         } catch (err) {
             console.error(err);
             notificationCenter.push(`Failed to open file: ${path}`, 'error');
@@ -54,7 +61,7 @@ function EditorLayout() {
                 const saveCmd = new SaveFileCommand(currentFile, content);
                 await commandInvoker.executeCommand(saveCmd);
                 setIsDirty(false);
-                
+
                 // Observer Pattern: Trigger notification on success
                 notificationCenter.push('File saved successfully!', 'success');
             } catch (err) {
@@ -80,7 +87,7 @@ function EditorLayout() {
         <div className="app-container">
             {/* GLOBAL OBSERVER COMPONENT: Notification Panel */}
             <NotificationPanel />
-            
+
             <FileExplorer onSelectFile={handleSelectFile} />
             <div className="editor-container">
                 {currentFile ? (
@@ -101,7 +108,15 @@ function EditorLayout() {
                         />
                     </>
                 ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#5c6370' }}>
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: '100%',
+                            color: '#5c6370',
+                        }}
+                    >
                         Select a file to edit
                     </div>
                 )}

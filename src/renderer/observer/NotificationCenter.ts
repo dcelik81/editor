@@ -1,6 +1,6 @@
 /**
  * Observer Pattern - Subject
- * 
+ *
  * This class acts as the Subject in the Observer Pattern.
  * It maintains a list of observers (callbacks) and notifies them whenever
  * the state (list of notifications) changes.
@@ -15,10 +15,15 @@ export interface Notification {
     timestamp: Date;
 }
 
+interface NotificationSubject {
+    register(observer: NotificationObserver): () => void;
+    unregister(observer: NotificationObserver): void;
+}
+
 // Observer type: a function that receives the updated list of notifications
 export type NotificationObserver = (notifications: Notification[]) => void;
 
-class NotificationCenter {
+class NotificationCenter implements NotificationSubject {
     // SINGLETON INSTANCE
     private static instance: NotificationCenter;
 
@@ -44,21 +49,21 @@ class NotificationCenter {
      * @param observer The callback function to be invoked on updates
      * @returns A cleanup function to unsubscribe
      */
-    public subscribe(observer: NotificationObserver): () => void {
+    public register(observer: NotificationObserver): () => void {
         this.observers.push(observer);
         // Immediately notify the new subscriber of current state
         observer(this.notifications);
 
         // Return unsubscribe function for convenience
-        return () => this.unsubscribe(observer);
+        return () => this.unregister(observer);
     }
 
     /**
      * UNSUBSCRIBE from the Notification Center.
      * @param observer The observer to remove
      */
-    public unsubscribe(observer: NotificationObserver): void {
-        this.observers = this.observers.filter(obs => obs !== observer);
+    public unregister(observer: NotificationObserver): void {
+        this.observers = this.observers.filter((obs) => obs !== observer);
     }
 
     /**
@@ -66,7 +71,7 @@ class NotificationCenter {
      * This is the core method of the Observer Pattern.
      */
     private notify(): void {
-        this.observers.forEach(observer => observer(this.notifications));
+        this.observers.forEach((observer) => observer(this.notifications));
     }
 
     /**
@@ -78,7 +83,7 @@ class NotificationCenter {
             id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
             message,
             level,
-            timestamp: new Date()
+            timestamp: new Date(),
         };
 
         this.notifications = [...this.notifications, newNotification];
@@ -96,8 +101,8 @@ class NotificationCenter {
      */
     public remove(id: string): void {
         const initialLength = this.notifications.length;
-        this.notifications = this.notifications.filter(n => n.id !== id);
-        
+        this.notifications = this.notifications.filter((n) => n.id !== id);
+
         // Only notify if something actually changed
         if (this.notifications.length !== initialLength) {
             this.notify();

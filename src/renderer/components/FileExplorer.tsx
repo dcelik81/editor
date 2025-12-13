@@ -36,7 +36,7 @@ export default class FileExplorer extends Component<
             files: [],
             isModalOpen: false,
             modalType: null,
-            modalInputValue: ''
+            modalInputValue: '',
         };
     }
 
@@ -70,19 +70,23 @@ export default class FileExplorer extends Component<
         this.setState({
             isModalOpen: true,
             modalType: type,
-            modalInputValue: ''
+            modalInputValue: '',
         });
     };
 
     closeModal = () => {
-        this.setState({ isModalOpen: false, modalType: null, modalInputValue: '' });
+        this.setState({
+            isModalOpen: false,
+            modalType: null,
+            modalInputValue: '',
+        });
     };
 
     handleConfirmCreation = async () => {
         const { currentPath, modalType, modalInputValue } = this.state;
 
         if (!modalInputValue.trim()) {
-            alert("Lütfen bir isim girin.");
+            alert('Lütfen bir isim girin.');
             return;
         }
 
@@ -124,33 +128,48 @@ export default class FileExplorer extends Component<
     };
 
     render() {
-        const { currentPath, files, isModalOpen, modalType, modalInputValue } = this.state;
+        const { currentPath, files, isModalOpen, modalType, modalInputValue } =
+            this.state;
 
         return (
-            <div className="file-explorer" style={{position: 'relative'}}>
-
+            <div className="file-explorer" style={{ position: 'relative' }}>
                 {/* --- BURASI YENİ: Giriş Penceresi (Modal) --- */}
                 {isModalOpen && (
-                    <div style={{
-                        position: 'absolute',
-                        top: 0, left: 0, right: 0, bottom: 0,
-                        backgroundColor: 'rgba(0,0,0,0.8)', // Arka planı karart
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        zIndex: 1000 // En üstte görünsün
-                    }}>
-                        <div style={{
-                            backgroundColor: '#21252b',
-                            padding: '20px',
-                            borderRadius: '8px',
-                            border: '1px solid #181a1f',
-                            boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-                            width: '250px',
-                            textAlign: 'center'
-                        }}>
-                            <h3 style={{margin: '0 0 15px 0', color: 'white', fontSize: '14px'}}>
-                                {modalType === 'file' ? 'Yeni Dosya Oluştur' : 'Yeni Klasör Oluştur'}
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: 'rgba(0,0,0,0.8)', // Arka planı karart
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 1000, // En üstte görünsün
+                        }}
+                    >
+                        <div
+                            style={{
+                                backgroundColor: '#21252b',
+                                padding: '20px',
+                                borderRadius: '8px',
+                                border: '1px solid #181a1f',
+                                boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+                                width: '250px',
+                                textAlign: 'center',
+                            }}
+                        >
+                            <h3
+                                style={{
+                                    margin: '0 0 15px 0',
+                                    color: 'white',
+                                    fontSize: '14px',
+                                }}
+                            >
+                                {modalType === 'file'
+                                    ? 'Yeni Dosya Oluştur'
+                                    : 'Yeni Klasör Oluştur'}
                             </h3>
 
                             <input
@@ -158,10 +177,15 @@ export default class FileExplorer extends Component<
                                 autoFocus
                                 placeholder="İsim giriniz..."
                                 value={modalInputValue}
-                                onChange={(e) => this.setState({modalInputValue: e.target.value})}
+                                onChange={(e) =>
+                                    this.setState({
+                                        modalInputValue: e.target.value,
+                                    })
+                                }
                                 onKeyDown={(e) => {
-                                    if(e.key === 'Enter') this.handleConfirmCreation();
-                                    if(e.key === 'Escape') this.closeModal();
+                                    if (e.key === 'Enter')
+                                        this.handleConfirmCreation();
+                                    if (e.key === 'Escape') this.closeModal();
                                 }}
                                 style={{
                                     width: '90%',
@@ -170,11 +194,16 @@ export default class FileExplorer extends Component<
                                     backgroundColor: '#282c34',
                                     border: '1px solid #181a1f',
                                     color: 'white',
-                                    borderRadius: '4px'
+                                    borderRadius: '4px',
                                 }}
                             />
 
-                            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                }}
+                            >
                                 <button
                                     onClick={this.closeModal}
                                     style={{
@@ -183,7 +212,7 @@ export default class FileExplorer extends Component<
                                         padding: '6px 12px',
                                         color: 'white',
                                         borderRadius: '4px',
-                                        cursor: 'pointer'
+                                        cursor: 'pointer',
                                     }}
                                 >
                                     İptal
@@ -197,7 +226,7 @@ export default class FileExplorer extends Component<
                                         color: '#282c34',
                                         borderRadius: '4px',
                                         cursor: 'pointer',
-                                        fontWeight: 'bold'
+                                        fontWeight: 'bold',
                                     }}
                                 >
                                     Oluştur
@@ -208,36 +237,70 @@ export default class FileExplorer extends Component<
                 )}
 
                 <div className="explorer-header">
-                    <button onClick={this.handleOpenFolder} style={{marginBottom: '5px', width: '100%'}}>
+                    <button
+                        onClick={this.handleOpenFolder}
+                        style={{ marginBottom: '5px', width: '100%' }}
+                    >
                         Open Folder
                     </button>
 
                     {currentPath && (
                         <>
-                            <div style={{display: 'flex', gap: '5px', marginBottom: '5px'}}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    gap: '5px',
+                                    marginBottom: '5px',
+                                }}
+                            >
                                 <button
-                                    onClick={() => this.openCreationModal('file')}
-                                    style={{flex: 1, backgroundColor: '#61afef', color: '#282c34', border: 'none', cursor: 'pointer'}}
+                                    onClick={() =>
+                                        this.openCreationModal('file')
+                                    }
+                                    style={{
+                                        flex: 1,
+                                        backgroundColor: '#61afef',
+                                        color: '#282c34',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                    }}
                                 >
                                     + File
                                 </button>
                                 <button
-                                    onClick={() => this.openCreationModal('dir')}
-                                    style={{flex: 1, backgroundColor: '#c678dd', color: '#282c34', border: 'none', cursor: 'pointer'}}
+                                    onClick={() =>
+                                        this.openCreationModal('dir')
+                                    }
+                                    style={{
+                                        flex: 1,
+                                        backgroundColor: '#c678dd',
+                                        color: '#282c34',
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                    }}
                                 >
                                     + Directory
                                 </button>
                             </div>
-                            <button onClick={this.handleGoUp} style={{width: '100%'}}>
+                            <button
+                                onClick={this.handleGoUp}
+                                style={{ width: '100%' }}
+                            >
                                 ⬆ Up
                             </button>
-                            <div className="current-path" title={currentPath} style={{marginTop: '5px'}}>
+                            <div
+                                className="current-path"
+                                title={currentPath}
+                                style={{ marginTop: '5px' }}
+                            >
                                 {currentPath.split(/[/\\]/).pop()}
                             </div>
                         </>
                     )}
 
-                    {!currentPath && <div className="current-path">No Folder Selected</div>}
+                    {!currentPath && (
+                        <div className="current-path">No Folder Selected</div>
+                    )}
                 </div>
 
                 <div className="file-list">
