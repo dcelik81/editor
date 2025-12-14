@@ -1,6 +1,6 @@
 import { Extension } from '@codemirror/state';
-import { SyntaxStrategy } from './SyntaxStrategy';
 import { StreamLanguage, StringStream } from '@codemirror/language';
+import { SyntaxStrategy } from './SyntaxStrategy';
 
 export class JavaSyntaxStrategy implements SyntaxStrategy {
     parser = {

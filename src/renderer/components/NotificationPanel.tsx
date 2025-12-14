@@ -4,6 +4,7 @@ import {
     notificationCenter,
     Notification,
 } from '../observer/NotificationCenter';
+import { NotificationPanelObserver } from '../observer/NotificationPanelObserver';
 
 /**
  * Observer Pattern - Observer
@@ -22,13 +23,15 @@ const NotificationPanel: React.FC = () => {
             setNotifications(newNotifications);
         };
 
-        // 2. SUBSCRIBE to the Subject
-        // The subscribe method returns a cleanup function (unsubscribe)
-        const unsubscribe = notificationCenter.register(updateNotifications);
+        // 2. Create the Concrete Observer instance (Adapter)
+        const observer = new NotificationPanelObserver(updateNotifications);
 
-        // 3. UNSUBSCRIBE on cleanup
+        // 3. ATTACH to the Subject
+        notificationCenter.attach(observer);
+
+        // 4. DETACH on cleanup
         return () => {
-            unsubscribe();
+            notificationCenter.detach(observer);
         };
     }, []);
 

@@ -1,27 +1,16 @@
-/**
- * Observer Pattern - Subject
- *
- * This class acts as the Subject in the Observer Pattern.
- * It maintains a list of observers (callbacks) and notifies them whenever
- * the state (list of notifications) changes.
- */
+import { Observer, Notification, NotificationLevel } from './Observer';
 
-export type NotificationLevel = 'info' | 'success' | 'warning' | 'error';
-
-export interface Notification {
-    id: string;
-    message: string;
-    level: NotificationLevel;
-    timestamp: Date;
-}
+export { Notification, NotificationLevel };
 
 interface NotificationSubject {
-    register(observer: NotificationObserver): () => void;
-    unregister(observer: NotificationObserver): void;
+    attach(observer: Observer): void;
+    detach(observer: Observer): void;
+    notify(): void;
 }
 
-// Observer type: a function that receives the updated list of notifications
-export type NotificationObserver = (notifications: Notification[]) => void;
+// Keeping this for backward compatibility if needed, but internally we use Observer interface
+// or we can remove it if we are sure. The prompt asked to "Implement Observer Pattern properly".
+// So I will prioritize the Observer interface usage.
 
 class NotificationCenter implements NotificationSubject {
     // SINGLETON INSTANCE
@@ -30,8 +19,8 @@ class NotificationCenter implements NotificationSubject {
     // STATE: List of active notifications
     private notifications: Notification[] = [];
 
-    // OBSERVERS: List of subscribers listening for updates
-    private observers: NotificationObserver[] = [];
+    // OBSERVERS: List of subscribers
+    private observers: Observer[] = [];
 
     private constructor() {}
 
@@ -44,34 +33,32 @@ class NotificationCenter implements NotificationSubject {
     }
 
     /**
-     * SUBSCRIBE to the Notification Center.
-     * The observer will immediately receive the current state.
-     * @param observer The callback function to be invoked on updates
-     * @returns A cleanup function to unsubscribe
+     * ATTACH an observer to the Subject.
      */
-    public register(observer: NotificationObserver): () => void {
+    public attach(observer: Observer): void {
+        const isExist = this.observers.includes(observer);
+        if (isExist) {
+            return; // Prevent duplicate attachment
+        }
         this.observers.push(observer);
         // Immediately notify the new subscriber of current state
-        observer(this.notifications);
-
-        // Return unsubscribe function for convenience
-        return () => this.unregister(observer);
+        observer.update(this.notifications);
     }
 
     /**
-     * UNSUBSCRIBE from the Notification Center.
-     * @param observer The observer to remove
+     * DETACH an observer from the Subject.
      */
-    public unregister(observer: NotificationObserver): void {
+    public detach(observer: Observer): void {
         this.observers = this.observers.filter((obs) => obs !== observer);
     }
 
     /**
      * NOTIFY all observers of the current state.
-     * This is the core method of the Observer Pattern.
      */
-    private notify(): void {
-        this.observers.forEach((observer) => observer(this.notifications));
+    public notify(): void {
+        this.observers.forEach((observer) =>
+            observer.update(this.notifications),
+        );
     }
 
     /**

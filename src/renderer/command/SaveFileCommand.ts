@@ -2,6 +2,7 @@ import { Command } from './Command';
 
 export class SaveFileCommand implements Command {
     private filePath: string;
+
     private content: string;
 
     constructor(filePath: string, content: string) {

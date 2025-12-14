@@ -14,6 +14,7 @@ class AppUpdater {
 
 export default class Application {
     private windowManager: WindowManager;
+
     private ipcService: IpcService;
 
     constructor() {

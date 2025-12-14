@@ -15,7 +15,7 @@ export default function CodeEditor({
     return (
         <CodeMirror
             value={value}
-            theme={'none'}
+            theme="none"
             extensions={syntaxStrategy.getLanguageParser()}
             onChange={(val) => onChange(val)}
         />

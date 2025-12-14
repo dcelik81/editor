@@ -19,7 +19,6 @@ export default class IpcService {
                 properties: ['openDirectory'],
             });
             if (canceled) {
-                return;
             } else {
                 return filePaths[0];
             }
