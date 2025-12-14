@@ -2,6 +2,10 @@
 
 A modern, extensible desktop text editor built with Electron, React, and TypeScript. This application demonstrates the implementation of key software design patterns to create a maintainable and scalable architecture.
 
+- [Doğukan Çelik - 20200808071](https://github.com/dcelik81)
+- [Hüseyin Mert Afşarlı - 20210808031](https://github.com/HuseyinMertAfsarli)
+- [Serhat Buğra Tana - 20220808001](https://github.com/SerhatTana)
+
 ## Features
 
 -   **File Management**: Browse your file system, open files, and save changes seamlessly.
@@ -53,8 +57,8 @@ Used for the application-wide notification system.
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/electron-editor.git
-    cd electron-editor
+    git clone https://github.com/dcelik81/editor.git
+    cd editor
     ```
 
 2.  Install dependencies:
@@ -69,10 +73,6 @@ Start the application in development mode:
 ```bash
 npm start
 ```
-
-- [Doğukan Çelik - 20200808071](https://github.com/dcelik81)
-- [Hüseyin Mert Afşarlı - 20210808031](https://github.com/HuseyinMertAfsarli)
-- [Serhat Buğra Tana - 20220808001](https://github.com/dcelik81)
 
 ## Project Structure
 
